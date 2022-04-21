@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Container } from '@angular/compiler/src/i18n/i18n_ast';
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Employee } from './employee';
 import { EmployeeService } from './employee.service';
 
@@ -11,7 +12,9 @@ import { EmployeeService } from './employee.service';
 })
 export class AppComponent implements OnInit {
   title = 'employeemanagerapp';
-  employees!: Employee[];
+  employees: Employee[] = [];
+  editEmployee: Employee | undefined;
+  deleteEmployee: Employee | undefined;
 
   constructor(private employeeService: EmployeeService) { }
 
@@ -20,17 +23,17 @@ export class AppComponent implements OnInit {
   }
 
   public getEmployees(): void {
-    this.employeeService.getEmployees().subscribe(
-      (response: Employee[]) => {
+    this.employeeService.getEmployees().subscribe({
+      next: (response: Employee[]) => {
         this.employees = response;
       },
-      (error: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         alert(error.message)
       }
-    )
+    })
   }
 
-  public onOpenModal(employee: Employee, mode: String): void {
+  public onOpenModal(mode: String, employee?: Employee): void {
     // Create invisible button which will open the appropriate modal
     const button = document.createElement('button');
     // Override default type="submit"
@@ -41,17 +44,45 @@ export class AppComponent implements OnInit {
     if (mode === 'add') {
       button.setAttribute('data-target', '#addEmployeeModal');
     }
-    if (mode === 'edit') {
-      // ToDo: assign passed employee to editEmployee service
-      button.setAttribute('data-target', '#editEmployeeModal');
+    else if (mode === 'edit') {
+      this.editEmployee = employee;
+      button.setAttribute('data-target', '#updateEmployeeModal');
     }
-    if (mode === 'delete') {
+    else if (mode === 'delete') {
       // ToDo: assign passed employee to deleteEmployee service
       button.setAttribute('data-target', '#deleteEmployeeModal');
     }
     // Add button to page & click
     document.getElementById('main-container')?.appendChild(button);
     button.click();
+  }
+
+  public onAddEmployee(form: NgForm): void {
+    document.getElementById('add-employee-form')?.click();
+    this.employeeService.addEmployee(form.value).subscribe({
+      next: (response: Employee) => {
+        console.log(response);
+        this.getEmployees();
+        form.reset();
+      },
+      error: (error: HttpErrorResponse) => {
+        alert(error.message);
+        form.reset();
+      }
+    })
+  }
+
+  public onUpdateEmployee(employee: Employee): void {
+    //document.getElementById('edit-employee-form')?.click();
+    this.employeeService.updateEmployee(employee).subscribe({
+      next: (response: Employee) => {
+        console.log(response);
+        this.getEmployees();
+      },
+      error: (error: HttpErrorResponse) => {
+        alert(error.message)
+      }
+    })
   }
 
 }
