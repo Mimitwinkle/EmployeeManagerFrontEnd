@@ -1,3 +1,3 @@
 # Employee Manager App
 
-Built using Spring Boot, MySQL and Angular
+This is the front end of a web app & was built using Angular.
