@@ -49,7 +49,7 @@ export class AppComponent implements OnInit {
       button.setAttribute('data-target', '#updateEmployeeModal');
     }
     else if (mode === 'delete') {
-      // ToDo: assign passed employee to deleteEmployee service
+      this.deleteEmployee = employee;
       button.setAttribute('data-target', '#deleteEmployeeModal');
     }
     // Add button to page & click
@@ -57,6 +57,7 @@ export class AppComponent implements OnInit {
     button.click();
   }
 
+  // Add employee modal
   public onAddEmployee(form: NgForm): void {
     document.getElementById('add-employee-form')?.click();
     this.employeeService.addEmployee(form.value).subscribe({
@@ -72,10 +73,24 @@ export class AppComponent implements OnInit {
     })
   }
 
+  // Update employee modal
   public onUpdateEmployee(employee: Employee): void {
     //document.getElementById('edit-employee-form')?.click();
     this.employeeService.updateEmployee(employee).subscribe({
       next: (response: Employee) => {
+        console.log(response);
+        this.getEmployees();
+      },
+      error: (error: HttpErrorResponse) => {
+        alert(error.message)
+      }
+    })
+  }
+
+  // Delete employee modal
+  public onDeleteEmployee(employeeId: number): void {
+    this.employeeService.deleteEmployee(employeeId).subscribe({
+      next: (response: void) => {
         console.log(response);
         this.getEmployees();
       },
