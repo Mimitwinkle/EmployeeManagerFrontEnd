@@ -22,6 +22,7 @@ export class AppComponent implements OnInit {
       this.getEmployees();
   }
 
+  // Get all employees from database
   public getEmployees(): void {
     this.employeeService.getEmployees().subscribe({
       next: (response: Employee[]) => {
@@ -33,6 +34,7 @@ export class AppComponent implements OnInit {
     })
   }
 
+  // Search for employees
   public searchEmployees(key: String): void {
     console.log(key);
     const results: Employee[] = [];
@@ -52,6 +54,7 @@ export class AppComponent implements OnInit {
       console.log(results);
   }
 
+  // Open modal
   public onOpenModal(mode: String, employee?: Employee): void {
     // Create invisible button which will open the appropriate modal
     const button = document.createElement('button');
@@ -94,7 +97,6 @@ export class AppComponent implements OnInit {
 
   // Update employee modal
   public onUpdateEmployee(employee: Employee): void {
-    //document.getElementById('edit-employee-form')?.click();
     this.employeeService.updateEmployee(employee).subscribe({
       next: (response: Employee) => {
         console.log(response);
