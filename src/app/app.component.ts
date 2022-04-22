@@ -33,6 +33,25 @@ export class AppComponent implements OnInit {
     })
   }
 
+  public searchEmployees(key: String): void {
+    console.log(key);
+    const results: Employee[] = [];
+    for (const employee of this.employees) {
+      if(employee.firstName.toLowerCase().indexOf(key.toLowerCase()) !== -1 ||
+          employee.lastName.toLowerCase().indexOf(key.toLowerCase()) !== -1 ||
+          employee.jobTitle.toLowerCase().indexOf(key.toLowerCase()) !== -1 ||
+          employee.emailAddress.toLowerCase().indexOf(key.toLowerCase()) !== -1 ||
+          employee.phone.toLowerCase().indexOf(key.toLowerCase()) !== -1) {
+        results.push(employee);
+      }
+    }
+    this.employees = results;
+      if (!key) {
+        this.getEmployees();
+      }
+      console.log(results);
+  }
+
   public onOpenModal(mode: String, employee?: Employee): void {
     // Create invisible button which will open the appropriate modal
     const button = document.createElement('button');
